@@ -1,0 +1,186 @@
+{{define "title"}}{{.Title}}{{end}}
+{{define "content"}}
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col-6">
+            <table class="table">
+                <tr>
+                    <td> Probe URL</td>
+                    <td><a :href="generatedURL" v-html="generatedURL"></a></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Reference</td>
+                    <td v-html="result.ackReference"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Request Method</td>
+                    <td v-html="result.method"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Receive Timestamp</td>
+                    <td v-html="result.ackTimestamp"></td>
+                </tr>                        
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">            
+                    <ul class="nav nav-tabs card-header-tabs" id="resultTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="headers-tab" data-toggle="tab" href="#headers" role="tab" aria-controls="headers" aria-selected="true">Headers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="body-tab" data-toggle="tab" href="#body" role="tab" aria-controls="body" aria-selected="false">Body</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="raw-tab" data-toggle="tab" href="#raw" role="tab" aria-controls="raw" aria-selected="false">Raw</a>
+                        </li>
+                    </ul>                    
+                </div>
+                <div class="tab-content card-body" id="resultTabContent">
+                    <div class="tab-pane fade show active" id="headers" role="tabpanel" aria-labelledby="headers-tab" style="min-height: 600px;">
+                        <pre v-html="result.headers"></pre>            
+                    </div>
+                    <div class="tab-pane fade" id="body" role="tabpanel" aria-labelledby="body-tab" style="min-height: 600px;">
+                        <pre v-html="result.body"></pre>
+                    </div>
+                    <div class="tab-pane fade" id="raw" role="tabpanel" aria-labelledby="raw-tab" style="min-height: 600px;">
+                        <pre v-html="result.raw"></pre>
+                    </div>                    
+                </div>
+              </div>                      
+        </div>
+    </div>
+</div>
+<!--<div class="container-fluid">
+    <div v-if="monitorMode == false" class="row">
+        <div class="col-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-md-8 pt-3">
+                        <h2>Overview</h2>
+                        <p class="text-white">
+                            Use this tool to display HTTP headers and body contents. It is primarily used
+                            for testing HTTP clients, microservices and other HTTP event base messages. 
+                            I developed this tool to help my development team in mocking up a SOA server which
+                            we don't have access during development.
+                        </p>
+                        <h2>Usage</h2>
+                        <p class="text-white">                
+                            Using your web browser or Postman do an HTTP GET or HTTP POST request to this
+                            <br/>generated URL: <a target="_blank" :href="generatedURL" v-html="generatedURL"></a>
+                        </p>                                                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 py-5">
+                        <img class="w-100" src="/static/img/http-cat-demo.gif" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-md-8">
+                        <h2>Monitor Isolation</h2>
+                        <p class="text-white">
+                            This tool can handle multiple users who want to debug their HTTP messages. To make that
+                            possible, the tool generates a unique ID for you to send and monitor you HTTP transactions.            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="monitorMode == true" class="row">        
+        <div class="col-12 col-sm-12 col-md-12 pt-3">
+            <pre v-for="item in httpDumps.slice().reverse()" v-html="item" style="color: #ffffff;"></pre>
+        </div>                           
+    </div>
+</div>-->
+{{end}}
+{{define "scripts"}}
+<script type="text/javascript">
+
+    var sharedEvents = new Vue();
+
+    var socket = io("", {        
+        query: {
+            r: "{{.Data.room}}"
+        }
+    });
+    
+    socket.on('dump', function(m, ackr, ackt, h, b, r){        
+        sharedEvents.$emit('dump', {
+            method: m,
+            ackReference: ackr,
+            ackTimestamp: ackt,
+            headers: h,
+            body: b,
+            raw: r
+        });
+    });
+    
+    var app = new Vue({
+        el: "#root",
+        data: {
+            selectedTab: "headers",
+            generatedId: "{{.Data.room}}",
+            o: null,
+            monitorMode: false,
+            
+            result: {
+                method: "",
+                ackReference: "",
+                ackTimestamp: "",
+                headers: "",
+                body: "",
+                raw: "",
+            }            
+            //httpDumps: [],            
+        },
+        computed: {          
+            generatedURL() {
+                return "https://probe.johnpili.com/send/" + this.generatedId;
+            }  
+        },
+        methods:
+        {
+            onTabClick(t) {
+                this.selectedTab = t;
+            },
+            isSelectedTab(t) {
+                if(this.selectedTab === t) {
+                    return 'active';
+                }
+                return ''
+            },
+            pushHttpDump(data) {
+                //if(!this.monitorMode) {
+                //    this.monitorMode = true;
+                //}
+                //this.httpDumps.push(data);            
+                //if(this.httpDumps.length > 10) {
+                //    this.httpDumps.shift();                                                                    
+                //}
+                this.result.method = data.method;
+                this.result.ackReference = data.ackReference;
+                this.result.ackTimestamp = data.ackTimestamp;
+                this.result.headers = data.headers;
+                this.result.body = data.body;
+                this.result.raw = data.raw;
+            },            
+        },        
+        beforeMount() {                        
+            try {                                            
+            }
+            catch (err) {
+            }
+        },
+        mounted() {
+            sharedEvents.$on('dump', (data) => {
+                this.pushHttpDump(data);                
+            });            
+        }
+    });
+</script>
+{{end}}

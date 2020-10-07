@@ -1,0 +1,14 @@
+body{
+    font-size: .9rem;
+    margin: 0px;
+    padding: 0px;
+    background-color: #f6f8fa;
+    background: no-repeat center center fixed;
+    /*background: url(/base64/wallpaper) no-repeat center center fixed; */
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.card { background-color: rgba(245, 245, 245, 0.4); }

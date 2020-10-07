@@ -1,0 +1,12 @@
+http:    
+    port: 8088
+    is_tls: false
+    server_cert: "server.crt"
+    server_key: "server.key"
+simulator:
+    enableDelay: false
+    delayType: "RANDOM"
+    delaySec: 60
+system:
+    env_cookie_name: "ENV_HTTP_CAT_COOKIE_NAME"
+    env_cookie_key: "ENV_HTTP_CAT_COOKIE_KEY"
