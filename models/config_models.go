@@ -16,7 +16,7 @@ type Config struct {
 	} `yaml:"simulator"`
 
 	System struct {
-		EnvCookieName string `yaml:"env_cookie_name"`
-		EnvCookieKey  string `yaml:"env_cookie_key"`
+		CookieName string `yaml:"cookie_name"`
+		CookieKey  string `yaml:"cookie_key"`
 	} `yaml:"system"`
 }

@@ -35,7 +35,12 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>            
-            <ul class="navbar-nav ml-auto">                
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/documentation">Documentation</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="helpNavbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -112,17 +117,14 @@
         <!-- endregion -->
     </div>
     <script>
-        $(document).ready(function () {
-
-            $("#sidebar").mCustomScrollbar({
-                theme: "minimal"
-            });
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar, #content, #navbar-custom').toggleClass('active');
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
+        $(document).ready(function () {            
+            /*var current = location.pathname;            
+            $('#nav li a').each(function(){
+                var $this = $(this);                    
+                if($this.attr('href').indexOf(current) !== -1){
+                    $this.addClass('active');
+                }
+            })*/            
 
             $('.dropdown-menu a.dropdown-toggle').on('click', function (e) {
                 if (!$(this).next().hasClass('show')) {
@@ -139,6 +141,7 @@
 
                 return false;
             });
+
 
         });
     </script>    

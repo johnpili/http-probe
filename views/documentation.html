@@ -1,0 +1,62 @@
+{{define "title"}}{{.Title}}{{end}}
+{{define "content"}}
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col-12">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-md-8 pt-3" style="color: #000000;">
+                        <h2>Overview</h2>
+                        <p>
+                            Use this tool to display HTTP headers and HTTP body payloads. It is primarily used
+                            for testing HTTP clients, microservices and other HTTP event base messages. 
+                            I developed this tool to help my development team in mocking up a SOA server which
+                            we don't have access during development.
+                        </p>
+                        <h2>Usage</h2>
+                        <p>                
+                            Using your web browser or Postman do an HTTP GET or HTTP POST request to this
+                            <br/>generated URL: <a target="_blank" :href="generatedURL" v-html="generatedURL"></a>
+                        </p>                                                
+                        <h2>Monitor Isolation</h2>
+                        <p>
+                            This tool can handle multiple users who want to debug their HTTP messages. To make that
+                            possible, the tool generates a unique ID for you to send and monitor you HTTP transactions.            
+                        </p>
+                        <h2>Disclaimer</h2>
+                        <p>
+                            No information sent into this tool are stored. It uses an event based mechanism (websocket) to 
+                            display the HTTP information into the user interface (UI) in real-time. A cookie is used to 
+                            generate and established an ID reference to the web UI monitor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>                        
+    </div>    
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="text/javascript">
+    var sharedEvents = new Vue();    
+    var app = new Vue({
+        el: "#root",
+        data: {            
+            generatedId: "{{.Data.room}}",
+            o: null,                            
+        },
+        computed: {          
+            generatedURL() {
+                return "https://probe.johnpili.com/send/" + this.generatedId;
+            }  
+        },
+        methods:
+        {            
+        },        
+        beforeMount() {                                    
+        },
+        mounted() {            
+        }
+    });
+</script>
+{{end}}

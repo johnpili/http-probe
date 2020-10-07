@@ -6,7 +6,7 @@
             <table class="table">
                 <tr>
                     <td> Probe URL</td>
-                    <td><a :href="generatedURL" v-html="generatedURL"></a></td>
+                    <td><a target="_blank" :href="generatedURL" v-html="generatedURL"></a></td>
                 </tr>
                 <tr>
                     <td class="w-25">Reference</td>
@@ -41,13 +41,13 @@
                 </div>
                 <div class="tab-content card-body" id="resultTabContent">
                     <div class="tab-pane fade show active" id="headers" role="tabpanel" aria-labelledby="headers-tab" style="min-height: 600px;">
-                        <pre v-html="result.headers"></pre>            
+                        <pre class="vh-100" v-html="result.headers"></pre>            
                     </div>
                     <div class="tab-pane fade" id="body" role="tabpanel" aria-labelledby="body-tab" style="min-height: 600px;">
-                        <pre v-html="result.body"></pre>
+                        <pre class="vh-100" v-html="result.body"></pre>
                     </div>
                     <div class="tab-pane fade" id="raw" role="tabpanel" aria-labelledby="raw-tab" style="min-height: 600px;">
-                        <pre v-html="result.raw"></pre>
+                        <pre class="vh-100" v-html="result.raw"></pre>
                     </div>                    
                 </div>
               </div>                      
