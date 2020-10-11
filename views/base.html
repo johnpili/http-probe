@@ -12,6 +12,7 @@
     <meta name="description" />    
     <link rel="stylesheet" href="/static/vendors/bootstrap-4.4.1-dist/css/bootstrap.min.css" />    
     <link rel="stylesheet" href="/static/vendors/fontawesome-free-5.11.2-web/css/all.css" />    
+    <link rel="stylesheet" href="/static/vendors/simple-lightbox/simple-lightbox.min.css" />    
     <link rel="stylesheet" href="/static/css/site.css" />
 
     <script src="/static/vendors/jquery/jquery-3.4.1.min.js" type="text/javascript"></script>
@@ -25,7 +26,14 @@
     <script src="/static/vendors/moment/moment.min.js" type="text/javascript"></script>    
     <script src="/static/vendors/malihu-custom-scrollbar-plugin-3.1.5/jquery.mCustomScrollbar.concat.min.js" type="text/javascript"></script>
 
-    <script src="/static/vendors/socket.io/2.3.0/socket.io.js"></script>
+    <script src="/static/vendors/socket.io/2.3.0/socket.io.js"></script>    
+    <script src="/static/vendors/simple-lightbox/simple-lightbox.min.js"></script>
+    <script src="/static/vendors/simple-lightbox/simple-lightbox.jquery.min.js"></script>
+    <style>
+        .sl-overlay {
+            background-color: #000000;
+        }
+    </style>
 </head>
 <body>
     <div id="root">
@@ -142,7 +150,9 @@
                 return false;
             });
 
-
+            var lightbox = $('.slb a').simpleLightbox({
+                overlay: true,
+            });
         });
     </script>    
     {{block "scripts" .}}{{end}}
