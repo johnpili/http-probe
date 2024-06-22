@@ -1,0 +1,48 @@
+{{define "title"}}{{.Title}}{{end}}
+{{define "content"}}
+<div class="container">
+    <div class="row">
+        <div class="col-12 pt-3">
+            <h3>Overview</h3>
+            <p>
+                Use this tool to display HTTP headers and HTTP body payloads. It is primarily used
+                for testing HTTP clients, microservices and other HTTP event base messages.
+                I developed this tool to help my development team in mocking up a SOA server which
+                we don't have access during development.
+            </p>
+            <h3>Usage</h3>
+            <p>
+                Using your web browser or Postman do a HTTP GET or HTTP POST request to this
+                <br/>generated URL: <a target="_blank" :href="generatedURL" v-html="generatedURL"></a>
+            </p>
+            <h3>Isolated Sessions</h3>
+            <p>
+                This tool can handle multiple users who want to debug their HTTP messages. To make that
+                possible, the tool generates a unique ID for you to send and monitor you HTTP transactions.
+            </p>
+            <h3>Disclaimer</h3>
+            <p>
+                No information sent into this tool are stored. It uses an event based mechanism (via socketio) to
+                display the HTTP information into the user interface (UI) in real-time. A cookie is used to
+                generate and established an ID reference to the web UI monitor.
+            </p>
+        </div>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="text/javascript">
+    let app = new Vue({
+        el: "#root",
+        data: {            
+            generatedId: "{{.Data.room}}",
+            o: null,                            
+        },
+        computed: {          
+            generatedURL() {
+                return "https://probe.johnpili.com/send/" + this.generatedId;
+            }  
+        }
+    });
+</script>
+{{end}}

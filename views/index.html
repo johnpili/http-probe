@@ -1,0 +1,116 @@
+{{define "title"}}{{.Title}}{{end}}
+{{define "content"}}
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col-6">
+            <table class="table">
+                <tr>
+                    <td>Probe URL</td>
+                    <td><a target="_blank" :href="generatedURL" v-html="generatedURL"></a></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Reference</td>
+                    <td v-html="result.ackReference"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Request Method</td>
+                    <td v-html="result.method"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Receive Timestamp</td>
+                    <td v-html="result.ackTimestamp"></td>
+                </tr>                        
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">            
+                    <ul class="nav nav-tabs card-header-tabs" id="resultTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="headers-tab" data-bs-toggle="tab" data-bs-target="#headers" role="tab" aria-controls="headers" aria-selected="true">Headers</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="body-tab" data-bs-toggle="tab" data-bs-target="#body" role="tab" aria-controls="body" aria-selected="false">Body</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="raw-tab" data-bs-toggle="tab" data-bs-target="#raw" role="tab" aria-controls="raw" aria-selected="false">Raw</button>
+                        </li>
+                    </ul>                    
+                </div>
+                <div class="tab-content card-body" id="resultTabContent">
+                    <div class="tab-pane fade show active" id="headers" role="tabpanel" aria-labelledby="headers-tab" style="min-height: 600px;">
+                        <pre class="vh-100" v-html="result.headers"></pre>
+                    </div>
+                    <div class="tab-pane fade" id="body" role="tabpanel" aria-labelledby="body-tab" style="min-height: 600px;">
+                        <pre class="vh-100" v-html="result.body"></pre>
+                    </div>
+                    <div class="tab-pane fade" id="raw" role="tabpanel" aria-labelledby="raw-tab" style="min-height: 600px;">
+                        <pre class="vh-100" v-html="result.raw"></pre>
+                    </div>                    
+                </div>
+              </div>                      
+        </div>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="text/javascript">
+    const eventReference = "dump@{{.Data.room}}";
+    let sharedEvents = new Vue();
+
+    let socket = io("", {
+        query: {
+            r: "{{.Data.room}}"
+        }
+    });
+    
+    socket.on(eventReference, function(m, ackr, ackt, h, b, r){
+        sharedEvents.$emit(eventReference, {
+            method: m,
+            ackReference: ackr,
+            ackTimestamp: ackt,
+            headers: h,
+            body: b,
+            raw: r
+        });
+    });
+    
+    let app = new Vue({
+        el: "#root",
+        data: {
+            generatedId: "{{.Data.room}}",
+            result: {
+                method: "",
+                ackReference: "",
+                ackTimestamp: "",
+                headers: "",
+                body: "",
+                raw: "",
+            }
+        },
+        computed: {          
+            generatedURL() {
+                return "https://probe.johnpili.com/send/" + this.generatedId;
+            }  
+        },
+        methods:
+        {
+            pushHttpDump(data) {
+                this.result.method = data.method;
+                this.result.ackReference = data.ackReference;
+                this.result.ackTimestamp = data.ackTimestamp;
+                this.result.headers = data.headers;
+                this.result.body = data.body;
+                this.result.raw = data.raw;
+            },            
+        },
+        mounted() {
+            sharedEvents.$on(eventReference, (data) => {
+                this.pushHttpDump(data);                
+            });            
+        }
+    });
+</script>
+{{end}}
