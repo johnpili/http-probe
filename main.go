@@ -93,9 +93,9 @@ func main() {
 
 func setupSocketIO() *socketio.Server {
 	server := socketio.NewServer(nil)
+
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-
 		url := s.URL()
 		rooms := url.Query()["r"]
 		if len(rooms) > 0 {
@@ -104,7 +104,6 @@ func setupSocketIO() *socketio.Server {
 		}
 		return nil
 	})
-
 	server.OnError("/", func(s socketio.Conn, e error) {
 		log.Println("error", e)
 	})
@@ -128,7 +127,6 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, fmt.Sprintf("/%s", id), 302)
 			return
 		}
-
 		generatedID := generateID(session, w, r)
 		http.Redirect(w, r, fmt.Sprintf("/%s", generatedID), 302)
 		return
@@ -171,7 +169,6 @@ func receiver(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(&sb, "Method: %s\n\n", r.Method)
 
 			var sbHeaders strings.Builder
-
 			fmt.Fprintf(&sb, "Headers:\n\n")
 			for name, headers := range r.Header {
 				for _, h := range headers {
@@ -188,7 +185,6 @@ func receiver(w http.ResponseWriter, r *http.Request) {
 			}
 
 			var sbBody strings.Builder
-
 			bodyBuffer, _ := io.ReadAll(http.MaxBytesReader(w, r.Body, 1024))
 			if len(bodyBuffer) > 0 {
 				fmt.Fprintf(&sb, "Body:\n\n")
@@ -243,6 +239,7 @@ func documentation(w http.ResponseWriter, r *http.Request) {
 func generateID(session *sessions.Session, w http.ResponseWriter, r *http.Request) string {
 	generatedID := generateGUID()
 	session.Values["id"] = generatedID
-	session.Save(r, w)
+	session.Options.MaxAge = 0
+	_ = session.Save(r, w)
 	return generatedID
 }
