@@ -67,7 +67,6 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", dashboard)
 	mux.HandleFunc("GET /{id}", dashboard)
-	mux.HandleFunc("GET /documentation", documentation)
 
 	mux.HandleFunc("GET /send/{id}", receiver)
 	mux.HandleFunc("POST /send/{id}", receiver)
@@ -220,20 +219,6 @@ func receiver(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNotFound)
-}
-
-func documentation(w http.ResponseWriter, r *http.Request) {
-	session, _ := cookieStore.Get(r, configuration.System.CookieName)
-
-	data := make(map[string]interface{})
-	if id, ok := session.Values["id"].(string); ok {
-		data["room"] = id
-	}
-
-	page := NewPage()
-	page.Title = "Documentation | probe.johnpili.com"
-	page.SetData(data)
-	page.RenderPage(w, r, "views/base.html", "views/documentation.html")
 }
 
 func generateID(session *sessions.Session, w http.ResponseWriter, r *http.Request) string {
