@@ -73,6 +73,11 @@ func main() {
 	mux.HandleFunc("PUT /send/{id}", receiver)
 	mux.HandleFunc("DELETE /send/{id}", receiver)
 
+	mux.HandleFunc("GET /send/{id}/{_...}", receiver)
+	mux.HandleFunc("POST /send/{id}/{_...}", receiver)
+	mux.HandleFunc("PUT /send/{id}/{_...}", receiver)
+	mux.HandleFunc("DELETE /send/{id}/{_...}", receiver)
+
 	mux.Handle("GET /static/", http.FileServerFS(staticFS))
 
 	mux.Handle("GET /socket.io/", socketIOServer)
@@ -150,7 +155,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 	data["room"] = id
 
 	page := NewPage()
-	page.Title = "An HTTP probe tool with web interface | probe.johnpili.com"
+	page.Title = "An HTTP payload viewer"
 	page.SetData(data)
 	page.RenderPage(w, r, "views/base.html", "views/index.html")
 }
@@ -165,6 +170,7 @@ func receiver(w http.ResponseWriter, r *http.Request) {
 	for _, room := range rooms {
 		if room == id {
 			var sb strings.Builder
+
 			fmt.Fprintf(&sb, "Method: %s\n\n", r.Method)
 
 			var sbHeaders strings.Builder
